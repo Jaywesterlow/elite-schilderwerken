@@ -1,0 +1,12 @@
+export { default as Header } from './components/Header.svelte';
+export { default as Hero } from './components/Hero.svelte';
+export { default as Services } from './components/Services.svelte';
+export { default as Facts } from './components/Facts.svelte';
+export { default as AreaBand } from './components/AreaBand.svelte';
+export { default as Projects } from './components/Projects.svelte';
+export { default as Reviews } from './components/Reviews.svelte';
+export { default as Process } from './components/Process.svelte';
+export { default as Contact } from './components/Contact.svelte';
+export { default as Footer } from './components/Footer.svelte';
+export { default as DemoOverlay } from './components/DemoOverlay.svelte';
+export { reveal, magnetic } from './actions/reveal';
