@@ -328,31 +328,29 @@ export function stackCards(list: HTMLElement) {
 }
 
 /**
- * Colour floods into a line drawing while the section scrolls past: the mask wipe
- * starts above the plate and comes down, with a ragged edge from the SVG filter.
- * Without motion the wipe stays where the markup puts it, so the drawing is simply
- * shown painted.
+ * The house gets painted while you scroll: a line drawing sits underneath, the painted
+ * version of the same drawing on top inside .wipe. The wipe (masked with a ragged ink
+ * edge) starts above the plate and slides down; its image counter-slides so the painted
+ * house stays put and only the edge travels. Both layers share the exact same pixels.
  */
 export function inkReveal(node: HTMLElement) {
 	return withGsap(({ gsap }) => {
-		const wipe = node.querySelector('.wipe');
-		if (!wipe) return;
+		const wipe = node.querySelector<HTMLElement>('.wipe');
+		const paint = wipe?.querySelector<HTMLElement>('.paint');
+		if (!wipe || !paint) return;
 		const mm = gsap.matchMedia();
 		mm.add(MOTION_OK, () => {
-			gsap.fromTo(
-				wipe,
-				{ yPercent: -102 },
-				{
-					yPercent: 0,
-					ease: 'none',
-					scrollTrigger: {
-						trigger: node,
-						start: 'top 88%',
-						end: 'bottom 45%',
-						scrub: 0.5
-					}
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: node,
+					start: 'top 85%',
+					end: 'bottom 80%',
+					scrub: 0.5
 				}
-			);
+			});
+			// y: 0 clears the CSS start transform, otherwise GSAP stacks its percentage on top of it.
+			tl.fromTo(wipe, { y: 0, yPercent: -104 }, { y: 0, yPercent: 0, ease: 'none' }, 0);
+			tl.fromTo(paint, { y: 0, yPercent: 104 }, { y: 0, yPercent: 0, ease: 'none' }, 0);
 		});
 		return () => mm.revert();
 	});

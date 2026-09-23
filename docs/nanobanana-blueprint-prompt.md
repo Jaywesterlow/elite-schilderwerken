@@ -51,3 +51,18 @@ watermarks, borders, colour, photographic textures, harsh shadows.
 ## Daarna
 
 Lever het beeld aan als PNG met transparante of egaal witte achtergrond. Dan zet ik het als blueprint op de site. Zodra jij die goedkeurt, maken we met dezelfde prompt plus `same composition, now painted` de kleurversie, en gaat het inktmasker eroverheen.
+
+## Gebruikt op 2026-09-23
+
+Model `gemini-3-pro-image-preview`, 3:4, 2K. Blueprint: de prompt hierboven, ongewijzigd (uitkomst: drie ramen in plaats van vier, verder zoals gevraagd).
+Kleurversie: de blueprint als referentiebeeld meegestuurd met de instructie de compositie exact te houden, en:
+
+```
+Now paint it: the same house, freshly painted, rendered as a clean, flat, realistic architectural
+colour illustration. Plastered facade in a warm soft white, window frames and the panelled front door in
+a deep teal-green gloss, dark anthracite roof tiles, brick chimney in muted red-brown, grey gutter and
+downpipe, sandstone-coloured paving, a green hedge, light wooden chairs. Soft even daylight, subtle
+shading only, no harsh shadows, no sky gradient: the paper stays plain off-white outside the drawing.
+```
+
+Beide beelden lijnen pixel voor pixel uit (zelfde inktcontour in beide). Bijgesneden tot 1792×2220 en als WebP 1200×1487 in `static/`.

@@ -79,3 +79,13 @@ Deploy: Vercel-connector `deploy_to_vercel`, target production, zonder package-l
 ## v6 (2026-09-23)
 - Werkwijze: stapelende kaarten (bibliotheek 22). Feiten: huis in twee lagen dat wordt ingekleurd op scroll (48), met rafelig inktmasker. Werkgebiedband met kinetische marquee (42). Teller in de hero (37).
 - nano banana niet bereikbaar (Weave vraagt om koppeling met Figma-account), dus de twee lagen zijn met de hand als SVG getekend: één vormdefinitie, twee keer gebruikt.
+
+## v7 nano banana (2026-09-23)
+
+- Feiten: de handgetekende SVG (`InkHouse.svelte`) is weg. Ervoor in de plaats twee beelden uit Nano Banana Pro
+  (`gemini-3-pro-image-preview`): `static/huis-lijn.webp` (blueprint, prompt in `docs/nanobanana-blueprint-prompt.md`)
+  en `static/huis-verf.webp` (dezelfde compositie, geverfd; gemaakt met de blueprint als referentiebeeld). 2K-originelen in `design/`.
+- `inkReveal` in `scroll.ts`: lijnlaag onder, verflaag erboven in `.wipe` met een CSS-masker (`static/inkrand.svg` als rafelige rand).
+  De wipe zakt op scroll, de verflaag schuift precies tegengesteld mee, dus het huis staat stil en alleen de inktrand loopt.
+  Gotcha: de CSS-startstand (`html.motion .wipe`) en GSAP's `yPercent` stapelen; daarom staat `y: 0` in de tween.
+- Repo: github.com/Jaywesterlow/elite-schilderwerken. Deploy vanuit `main`.

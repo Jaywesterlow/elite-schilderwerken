@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { reveal } from '$lib/actions/reveal';
-	import { textLines } from '$lib/actions/scroll';
+	import { textLines, inkReveal } from '$lib/actions/scroll';
 
 	// Alleen feiten uit de intake, geen verzonnen cijfers.
 	// Vormgeving volgt de rest van de site (tokens, Roboto Slab/Inter, kaarten, haarlijnen).
@@ -28,6 +28,26 @@
 				{/each}
 			</dl>
 		</div>
+
+		<!-- Eén tekening, twee lagen: de lijntekening onder, dezelfde tekening geverfd erboven.
+		     Het inktmasker (.wipe) zakt op scroll, dus het huis wordt geverfd terwijl je leest. -->
+		<figure class="plate" use:reveal use:inkReveal>
+			<div class="drawing">
+				<img
+					class="lines"
+					src="/huis-lijn.webp"
+					alt="Lijntekening van een vrijstaande woning die wordt geschilderd"
+					width="1200"
+					height="1487"
+					loading="lazy"
+					decoding="async"
+				/>
+				<div class="wipe" aria-hidden="true">
+					<img class="paint" src="/huis-verf.webp" alt="" width="1200" height="1487" loading="lazy" decoding="async" />
+				</div>
+			</div>
+			<figcaption>Zo gaat het in het echt ook: eerst de ondergrond, dan de verf.</figcaption>
+		</figure>
 	</div>
 </section>
 
@@ -73,10 +93,69 @@
 		color: var(--teal-900);
 	}
 
+	.plate {
+		margin: 0;
+	}
+
+	.drawing {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--ink-200);
+		border-radius: var(--radius-lg);
+		/* Papiertint van de tekening zelf, zodat de rand nooit kleurt bij het laden. */
+		background: #e5e0d7;
+		--edge: 6%;
+	}
+
+	.drawing img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.wipe {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		/* Bovenste deel dicht, onderste 6 % een rafelige inktrand. Samen één masker. */
+		mask:
+			linear-gradient(#000, #000) top / 100% calc(100% - var(--edge)) no-repeat,
+			url('/inkrand.svg') bottom / 100% var(--edge) no-repeat;
+		-webkit-mask:
+			linear-gradient(#000, #000) top / 100% calc(100% - var(--edge)) no-repeat,
+			url('/inkrand.svg') bottom / 100% var(--edge) no-repeat;
+		will-change: transform;
+	}
+
+	.paint {
+		position: absolute;
+		inset: 0;
+		will-change: transform;
+	}
+
+	/* Startstand zolang GSAP nog laadt, alleen met beweging aan (html.motion uit initScroll).
+	   Zonder JS of met minder beweging staat het huis gewoon geverfd op de plaat. */
+	:global(html.motion) .wipe {
+		transform: translateY(-104%);
+	}
+
+	:global(html.motion) .paint {
+		transform: translateY(104%);
+	}
+
+	figcaption {
+		margin-top: 12px;
+		font-size: 0.9rem;
+		color: var(--ink-500);
+	}
+
 	@media (min-width: 880px) {
 		.inner {
-			grid-template-columns: 1fr;
-			max-width: 780px;
+			grid-template-columns: 0.9fr 1.1fr;
+		}
+
+		.plate {
+			order: -1;
 		}
 	}
 
@@ -86,5 +165,4 @@
 			gap: 4px;
 		}
 	}
-
 </style>
