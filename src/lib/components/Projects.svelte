@@ -5,12 +5,6 @@
 	const base = 'https://www.eliteschilderwerken.nl/wp-content/uploads/';
 	const projects = [
 		{
-			src: base + '2018/12/elite_schilderwerken-slider-tall-buitenschilderwerk-villa-almere-01-1920-65.jpg',
-			alt: 'Buitenschilderwerk villa in Almere',
-			title: 'Villa, Almere',
-			tag: 'Buitenschilderwerk'
-		},
-		{
 			src: base + '2018/12/elite_schilderwerken-slider-tall-binnenschilderwerk-keuken-01-1920-65.jpg',
 			alt: 'Binnenschilderwerk van een keuken',
 			title: 'Keuken',
@@ -21,12 +15,6 @@
 			alt: 'Traprenovatie met schilderwerk',
 			title: 'Traprenovatie',
 			tag: 'Trap'
-		},
-		{
-			src: base + '2016/02/20151112_110013.jpg',
-			alt: 'Schilderwerk aan een grachtenpand',
-			title: 'Grachtenpand',
-			tag: 'Buitenschilderwerk'
 		}
 	];
 </script>
@@ -148,7 +136,7 @@
 		}
 		.gallery {
 			display: grid;
-			grid-template-columns: repeat(4, 1fr);
+			grid-template-columns: repeat(2, 1fr);
 			gap: 18px;
 			padding-block: 40px 90px;
 		}

@@ -3,7 +3,7 @@
 	import { pinUnder, countUp, textLines } from '$lib/actions/scroll';
 
 	const hero =
-		'https://www.eliteschilderwerken.nl/wp-content/uploads/2018/12/elite_schilderwerken-slider-tall-buitenschilderwerk-villa-almere-01-1920-65.jpg';
+		'https://www.eliteschilderwerken.nl/wp-content/uploads/2018/12/elite_schilderwerken-slider-tall-binnenschilderwerk-keuken-01-1920-65.jpg';
 </script>
 
 <section class="hero" id="top" use:pinUnder>
@@ -16,7 +16,7 @@
 		<div class="copy">
 			<p class="eyebrow" use:textLines={{ delay: 0.15 }}>Schildersbedrijf in Almere · sinds 2011</p>
 			<h1 use:textLines={{ delay: 0.3, duration: 1.1 }}>
-				Vakschilder voor binnen en buiten, met
+				Binnenschilder in Almere, met
 				<span class="stroke-word">
 					garantie
 					<svg class="stroke" viewBox="0 0 200 22" preserveAspectRatio="none" aria-hidden="true">

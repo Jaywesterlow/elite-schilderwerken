@@ -4,12 +4,12 @@
 
 	const services = [
 		{
-			title: 'Buitenschilderwerk',
-			text: 'Kozijnen, deuren, gevels en dakranden. Inclusief houtrotrenovatie waar nodig, zodat het werk jaren meegaat.'
+			title: 'Wanden en plafonds',
+			text: 'Strak geschilderd of gewit. Plafonds en wanden altijd twee keer, voor een volle, dekkende laag.'
 		},
 		{
-			title: 'Binnenschilderwerk',
-			text: 'Wanden, plafonds, deuren, kasten en lambrisering. Plafonds en wanden altijd twee keer gewit voor een volle, dekkende laag.'
+			title: 'Deuren, kozijnen en kasten',
+			text: 'Binnendeuren, kozijnen, kasten en lambrisering. Goed geschuurd en gelakt, zodat het jaren mooi blijft.'
 		},
 		{
 			title: 'Traprenovatie',

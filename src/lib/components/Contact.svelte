@@ -37,7 +37,7 @@
 			</label>
 			<label>
 				<span>Wat moet er gebeuren?</span>
-				<textarea name="klus" rows="4" placeholder="Bijv. kozijnen en deuren buiten, rijtjeshuis in Almere Stad"></textarea>
+				<textarea name="klus" rows="4" placeholder="Bijv. woonkamer en hal, wanden en plafonds, rijtjeshuis in Almere Stad"></textarea>
 			</label>
 			<label class="check">
 				<input type="checkbox" name="fotos" />

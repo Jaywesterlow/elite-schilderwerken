@@ -4,7 +4,7 @@
 
 	// Bewust placeholders: hier komen de echte reviews van Edwin (Google, Werkspot, of per mail).
 	const slots = [
-		{ who: 'Klant uit Almere Buiten', job: 'Buitenschilderwerk' },
+		{ who: 'Klant uit Almere Buiten', job: 'Wanden en plafonds' },
 		{ who: 'Klant uit Lelystad', job: 'Traprenovatie' },
 		{ who: 'Klant uit Almere Haven', job: 'Binnenschilderwerk en stucwerk' }
 	];

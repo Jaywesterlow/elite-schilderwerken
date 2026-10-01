@@ -6,14 +6,14 @@
 	<title>Elite Schilderwerken · Schilder in Almere · demo</title>
 	<meta
 		name="description"
-		content="Vakschilder in Almere voor binnen- en buitenschilderwerk, traprenovatie en stucwerk. Persoonlijke intake, heldere offerte, garantie."
+		content="Binnenschilder in Almere: wanden en plafonds, deuren en kasten, traprenovatie, behang en stucwerk. Persoonlijke intake, heldere offerte, garantie."
 	/>
 	<meta name="robots" content="noindex" />
 	<link
 		rel="preload"
 		as="image"
 		fetchpriority="high"
-		href="https://www.eliteschilderwerken.nl/wp-content/uploads/2018/12/elite_schilderwerken-slider-tall-buitenschilderwerk-villa-almere-01-1920-65.jpg"
+		href="https://www.eliteschilderwerken.nl/wp-content/uploads/2018/12/elite_schilderwerken-slider-tall-binnenschilderwerk-keuken-01-1920-65.jpg"
 	/>
 </svelte:head>
 

@@ -6,16 +6,22 @@
 	// Vormgeving volgt de rest van de site (tokens, Roboto Slab/Inter, kaarten, haarlijnen).
 	const facts = [
 		['Sinds', '2011'],
-		['Werk', 'Binnen- en buitenschilderwerk, traprenovatie, behang, stucwerk'],
+		['Werk', 'Binnenschilderwerk, traprenovatie, behang, stucwerk'],
 		['Garantie', 'Jarenlange garantie op het verfsysteem'],
 		['Aanspreekpunt', 'Eén persoon, van intake tot oplevering'],
 		['Advies', 'Gratis kleur- en productadvies'],
 		['Adres', 'Spinnakerplantsoen 58, Almere']
 	];
+
+	// De geverfde plaat (lijnlaag onder, verflaag erboven). Staat uit zolang er geen
+	// interieurbeelden zijn: het huis is buitenwerk en Elite doet alleen nog binnenwerk.
+	// Nieuwe beelden in static/ zetten en hier invullen, dan staat hij weer aan.
+	type Plate = { lines: string; paint: string; alt: string; w: number; h: number };
+	const plate = null as Plate | null;
 </script>
 
 <section class="section facts" id="feiten">
-	<div class="wrap inner">
+	<div class="wrap inner" class:has-plate={plate}>
 		<div class="sheet" use:reveal={{ stagger: 70 }}>
 			<p class="eyebrow" use:textLines>Feiten</p>
 			<h2 use:textLines>Geen beloftes, gewoon de gegevens.</h2>
@@ -31,23 +37,25 @@
 
 		<!-- Eén tekening, twee lagen: de lijntekening onder, dezelfde tekening geverfd erboven.
 		     Het inktmasker (.wipe) zakt op scroll, dus het huis wordt geverfd terwijl je leest. -->
+		{#if plate}
 		<figure class="plate" use:reveal use:inkReveal>
 			<div class="drawing">
 				<img
 					class="lines"
-					src="/huis-lijn.webp"
-					alt="Lijntekening van een vrijstaande woning die wordt geschilderd"
-					width="1200"
-					height="1487"
+					src={plate.lines}
+					alt={plate.alt}
+					width={plate.w}
+					height={plate.h}
 					loading="lazy"
 					decoding="async"
 				/>
 				<div class="wipe" aria-hidden="true">
-					<img class="paint" src="/huis-verf.webp" alt="" width="1200" height="1487" loading="lazy" decoding="async" />
+					<img class="paint" src={plate.paint} alt="" width={plate.w} height={plate.h} loading="lazy" decoding="async" />
 				</div>
 			</div>
 			<figcaption>Zo gaat het in het echt ook: eerst de ondergrond, dan de verf.</figcaption>
 		</figure>
+		{/if}
 	</div>
 </section>
 
@@ -151,6 +159,11 @@
 
 	@media (min-width: 880px) {
 		.inner {
+			max-width: 780px;
+		}
+
+		.inner.has-plate {
+			max-width: none;
 			grid-template-columns: 0.9fr 1.1fr;
 		}
 
