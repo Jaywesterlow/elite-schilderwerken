@@ -97,6 +97,6 @@ Deploy: Vercel-connector `deploy_to_vercel`, target production, zonder package-l
   Prompts en stappen in `docs/nanobanana-interieur-prompt.md`, 2K-originelen in `design/`.
 - `inkReveal` is nu de motor van bibliotheek 48a: de verflaag is een SVG-`<image>` met een maskerpad, en de rand
   is een filterketen (ruis, blur, feFuncA) op dat pad. Daardoor verandert de rafelrand terwijl hij zakt.
-  Start als de plaat 65 % van het scherm bereikt, klaar als de onderkant 85 % passeert, dus de hele plaat staat in
-  beeld als hij af is. Het pad steekt aan alle kanten buiten de plaat, dus hij eindigt tot in de randen geverfd. Safari en Firefox: zelfde beweging met een gladde rand.
+  Desktop: start als de plaat 65 % van het scherm bereikt, klaar als de onderkant 85 % passeert. Mobiel: start net
+  boven het midden (45 %), klaar als de bovenkant 12 % bereikt. De hele plaat staat in beeld als hij af is. Het pad steekt aan alle kanten buiten de plaat, dus hij eindigt tot in de randen geverfd. Safari en Firefox: zelfde beweging met een gladde rand.
 - Opgeruimd: huisbeelden, `inkrand.svg`, de blueprint-prompt, ongebruikte `parallax`, `drawOnScroll` en `favicon.svg`.

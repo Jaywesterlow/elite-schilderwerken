@@ -279,9 +279,10 @@ export function stackCards(list: HTMLElement) {
  * blur smears it, feFuncA cuts it hard again. The path moves through a fixed noise field, so
  * the ragged edge changes shape as it travels instead of sliding down as one stamp.
  *
- * Driven by ScrollTrigger (which Lenis already updates): starts when the plate's top passes
- * 65% of the viewport, done when its bottom passes 85%, so the whole plate is in view and
- * clear of the header when it finishes. The path reaches 120 units past the plate on the
+ * Driven by ScrollTrigger (which Lenis already updates). Desktop: starts when the plate's top
+ * passes 65% of the viewport, done when its bottom passes 85%. Phone: starts at 45%, done when
+ * the top reaches 12%. Either way the whole plate is in view and clear of the header when it
+ * finishes. The path reaches 120 units past the plate on the
  * left, right and top (the noise displaces it by up to 50) and overshoots the bottom at the
  * end, so the finished drawing is painted to every edge.
  * Safari and Firefox do not render the filter chain on a mask; there the edge stays smooth.
@@ -362,15 +363,18 @@ export function inkReveal(node: HTMLElement) {
 
 	const gsapAction = withGsap(({ gsap, ScrollTrigger }) => {
 		const mm = gsap.matchMedia();
-		mm.add(MOTION_OK, () => {
+		const track = (start: string, end: string) =>
 			ScrollTrigger.create({
 				trigger: node,
-				start: 'top 65%',
-				end: 'bottom 85%',
+				start,
+				end,
 				onUpdate: (self) => apply(self.progress),
 				onRefresh: (self) => apply(self.progress)
 			});
-		});
+		mm.add(`${MOTION_OK} and (min-width: 880px)`, () => track('top 65%', 'bottom 85%'));
+		// Phone: the plate fills most of the screen, so start just above the middle and finish
+		// while its top is still clear of the header.
+		mm.add(`${MOTION_OK} and (max-width: 879px)`, () => track('top 45%', 'top 12%'));
 		return () => mm.revert();
 	});
 
