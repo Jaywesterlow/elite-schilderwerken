@@ -13,11 +13,16 @@
 		['Adres', 'Spinnakerplantsoen 58, Almere']
 	];
 
-	// De geverfde plaat (lijnlaag onder, verflaag erboven). Staat uit zolang er geen
-	// interieurbeelden zijn: het huis is buitenwerk en Elite doet alleen nog binnenwerk.
-	// Nieuwe beelden in static/ zetten en hier invullen, dan staat hij weer aan.
+	// De geverfde plaat: lege kamer als lijntekening onder, dezelfde kamer geverfd en
+	// ingericht erboven. Op null zetten en de plaat staat uit.
 	type Plate = { lines: string; paint: string; alt: string; w: number; h: number };
-	const plate = null as Plate | null;
+	const plate: Plate | null = {
+		lines: '/kamer-lijn.webp',
+		paint: '/kamer-verf.webp',
+		alt: 'Lijntekening van een lege woonkamer die wordt geverfd en ingericht',
+		w: 1200,
+		h: 1487
+	};
 </script>
 
 <section class="section facts" id="feiten">
@@ -36,7 +41,7 @@
 		</div>
 
 		<!-- Eén tekening, twee lagen: de lijntekening onder, dezelfde tekening geverfd erboven.
-		     Het inktmasker (.wipe) zakt op scroll, dus het huis wordt geverfd terwijl je leest. -->
+		     Het inktmasker (.wipe) zakt op scroll, dus de kamer wordt geverfd terwijl je leest. -->
 		{#if plate}
 		<figure class="plate" use:reveal use:inkReveal>
 			<div class="drawing">
@@ -111,7 +116,7 @@
 		border: 1px solid var(--ink-200);
 		border-radius: var(--radius-lg);
 		/* Papiertint van de tekening zelf, zodat de rand nooit kleurt bij het laden. */
-		background: #e5e0d7;
+		background: #f3eae2;
 		--edge: 6%;
 	}
 
@@ -142,7 +147,7 @@
 	}
 
 	/* Startstand zolang GSAP nog laadt, alleen met beweging aan (html.motion uit initScroll).
-	   Zonder JS of met minder beweging staat het huis gewoon geverfd op de plaat. */
+	   Zonder JS of met minder beweging staat de kamer gewoon geverfd op de plaat. */
 	:global(html.motion) .wipe {
 		transform: translateY(-104%);
 	}
