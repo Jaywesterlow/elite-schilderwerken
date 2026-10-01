@@ -41,10 +41,10 @@
 		</div>
 
 		<!-- Eén tekening, twee lagen: de lijntekening onder, dezelfde tekening geverfd erboven.
-		     Het inktmasker (.wipe) zakt op scroll, dus de kamer wordt geverfd terwijl je leest. -->
+		     Een SVG-masker met een rafelige inktrand zakt op scroll, dus de kamer wordt geverfd terwijl je leest. -->
 		{#if plate}
-		<figure class="plate" use:reveal use:inkReveal>
-			<div class="drawing">
+		<figure class="plate" use:reveal>
+			<div class="drawing" use:inkReveal>
 				<img
 					class="lines"
 					src={plate.lines}
@@ -54,9 +54,13 @@
 					loading="lazy"
 					decoding="async"
 				/>
-				<div class="wipe" aria-hidden="true">
-					<img class="paint" src={plate.paint} alt="" width={plate.w} height={plate.h} loading="lazy" decoding="async" />
-				</div>
+				<svg class="ink-layer" viewBox="0 0 1000 1239" preserveAspectRatio="none" aria-hidden="true">
+					<defs>
+						<mask maskContentUnits="userSpaceOnUse"><path fill="white" d="M 0 1 Q 500 2 1000 1 L 1000 0 L 0 0 Z" /></mask>
+						<filter />
+					</defs>
+					<image href={plate.paint} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" />
+				</svg>
 			</div>
 			<figcaption>Zo gaat het in het echt ook: eerst de ondergrond, dan de verf.</figcaption>
 		</figure>
@@ -117,7 +121,6 @@
 		border-radius: var(--radius-lg);
 		/* Papiertint van de tekening zelf, zodat de rand nooit kleurt bij het laden. */
 		background: #f3eae2;
-		--edge: 6%;
 	}
 
 	.drawing img {
@@ -126,34 +129,12 @@
 		display: block;
 	}
 
-	.wipe {
+	.ink-layer {
 		position: absolute;
 		inset: 0;
-		overflow: hidden;
-		/* Bovenste deel dicht, onderste 6 % een rafelige inktrand. Samen één masker. */
-		mask:
-			linear-gradient(#000, #000) top / 100% calc(100% - var(--edge)) no-repeat,
-			url('/inkrand.svg') bottom / 100% var(--edge) no-repeat;
-		-webkit-mask:
-			linear-gradient(#000, #000) top / 100% calc(100% - var(--edge)) no-repeat,
-			url('/inkrand.svg') bottom / 100% var(--edge) no-repeat;
-		will-change: transform;
-	}
-
-	.paint {
-		position: absolute;
-		inset: 0;
-		will-change: transform;
-	}
-
-	/* Startstand zolang GSAP nog laadt, alleen met beweging aan (html.motion uit initScroll).
-	   Zonder JS of met minder beweging staat de kamer gewoon geverfd op de plaat. */
-	:global(html.motion) .wipe {
-		transform: translateY(-104%);
-	}
-
-	:global(html.motion) .paint {
-		transform: translateY(104%);
+		width: 100%;
+		height: 100%;
+		display: block;
 	}
 
 	figcaption {

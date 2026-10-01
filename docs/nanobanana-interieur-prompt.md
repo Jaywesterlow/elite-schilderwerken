@@ -63,7 +63,7 @@ the room's shape.
 
 Model `gemini-3-pro-image-preview`, 3:4, 2K. De fotoprompt hierboven gaf een te realistisch beeld; afgekeurd. Wat het werd:
 
-1. **Lijntekening:** `huis-lijn.webp` meegestuurd als stijlreferentie, met deze prompt:
+1. **Lijntekening:** de oude huistekening (inmiddels verwijderd) meegestuurd als stijlreferentie, met deze prompt:
 
 ```
 Use the attached drawing ONLY as a style reference: copy its exact drawing style (precise dark ink line drawing on plain off-white paper, variable line weight, no fills, no shading, no colour). Do not copy its subject.

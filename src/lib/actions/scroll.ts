@@ -4,7 +4,6 @@
  * Recipes (Svelte actions):
  *   use:pinUnder   — pin a section while the next section slides over it; its content
  *                    fades/scales back a little so the cover reads as depth.
- *   use:parallax   — element drifts vertically with scroll (index-based offsets).
  *   use:riseIn     — content rises into place as its section enters the viewport.
  *   use:headingLines — each line of a heading slides up out of its own mask (once).
  *   use:imageReveal  — a photo is cut open from the bottom while it settles from a slight zoom.
@@ -108,29 +107,6 @@ export function pinUnder(section: HTMLElement) {
 	});
 }
 
-export function parallax(node: HTMLElement, opts: { from: number; to: number; min?: number } = { from: 40, to: -40 }) {
-	return withGsap(({ gsap }) => {
-		const mm = gsap.matchMedia();
-		mm.add(`${MOTION_OK} and (min-width: ${opts.min ?? 760}px)`, () => {
-			gsap.fromTo(
-				node,
-				{ y: opts.from },
-				{
-					y: opts.to,
-					ease: 'none',
-					scrollTrigger: {
-						trigger: node.parentElement,
-						start: 'top bottom',
-						end: 'bottom top',
-						scrub: true
-					}
-				}
-			);
-		});
-		return () => mm.revert();
-	});
-}
-
 export function riseIn(node: HTMLElement) {
 	return withGsap(({ gsap }) => {
 		const mm = gsap.matchMedia();
@@ -206,37 +182,6 @@ export function imageReveal(node: HTMLElement, opts: { delay?: number } = {}) {
 			);
 			if (img) tl.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.8, ease: 'power2.out', clearProps: 'transform' }, 0);
 			ScrollTrigger.create({ trigger: node, start: 'top 85%', once: true, onEnter: () => tl.play() });
-		});
-		return () => mm.revert();
-	});
-}
-
-/**
- * SVG strokes draw themselves while the section scrolls past, instead of on entry.
- * Each path needs pathLength="1" and a dash offset of 1 in CSS; the scrub turns the
- * scroll into the pen. Later the same section can swap to a colour-in reveal.
- */
-export function drawOnScroll(node: SVGSVGElement | HTMLElement) {
-	node.classList.add('draw-scrub');
-	return withGsap(({ gsap }) => {
-		const mm = gsap.matchMedia();
-		mm.add(MOTION_OK, () => {
-			const paths = node.querySelectorAll<SVGGeometryElement>('[data-draw]');
-			gsap.fromTo(
-				paths,
-				{ strokeDashoffset: 1 },
-				{
-					strokeDashoffset: 0,
-					ease: 'none',
-					stagger: 0.25,
-					scrollTrigger: {
-						trigger: node.closest('section') ?? node,
-						start: 'top 75%',
-						end: 'bottom 75%',
-						scrub: 0.6
-					}
-				}
-			);
 		});
 		return () => mm.revert();
 	});
@@ -328,30 +273,109 @@ export function stackCards(list: HTMLElement) {
 }
 
 /**
- * The house gets painted while you scroll: a line drawing sits underneath, the painted
- * version of the same drawing on top inside .wipe. The wipe (masked with a ragged ink
- * edge) starts above the plate and slides down; its image counter-slides so the painted
- * house stays put and only the edge travels. Both layers share the exact same pixels.
+ * The room gets painted while you scroll (library animation 48a, "inkt loopt van boven naar
+ * beneden"). The line drawing sits underneath; the painted version is an SVG <image> on top,
+ * revealed by a mask path whose edge runs through a filter chain: noise displaces the path,
+ * blur smears it, feFuncA cuts it hard again. The path moves through a fixed noise field, so
+ * the ragged edge changes shape as it travels instead of sliding down as one stamp.
+ *
+ * Driven by ScrollTrigger (which Lenis already updates): starts when the plate's top passes
+ * 40% of the viewport, done when its bottom passes 55%. The final path overshoots the plate,
+ * so at the end the whole drawing is painted, never a ragged strip left at the bottom.
+ * Safari and Firefox do not render the filter chain on a mask; there the edge stays smooth.
  */
+const INK_VB = 1000;
+const INK_START = 'M 0 1  Q 500 2 1000 1  L 1000 0  L 0 0  Z';
+const INK_FINAL = 'M 0 1150  Q 500 1400 1000 1150  L 1000 0  L 0 0  Z';
+const INK_NUM = /-?\d+\.?\d*/g;
+const SVGNS = 'http://www.w3.org/2000/svg';
+let inkCount = 0;
+
 export function inkReveal(node: HTMLElement) {
-	return withGsap(({ gsap }) => {
-		const wipe = node.querySelector<HTMLElement>('.wipe');
-		const paint = wipe?.querySelector<HTMLElement>('.paint');
-		if (!wipe || !paint) return;
+	const svg = node.querySelector<SVGSVGElement>('.ink-layer');
+	const mask = svg?.querySelector('mask');
+	const filter = svg?.querySelector('filter');
+	const image = svg?.querySelector('image');
+	const shape = mask?.querySelector('path');
+	if (!svg || !mask || !filter || !image || !shape) return;
+
+	const uid = `ink-${++inkCount}`;
+	mask.id = `${uid}-mask`;
+	filter.id = `${uid}-filter`;
+
+	const ua = navigator.userAgent;
+	const smoothEdge = /^((?!chrome|android).)*safari/i.test(ua) || /firefox|fxios/i.test(ua);
+	if (!smoothEdge) shape.style.filter = `url(#${filter.id})`;
+
+	const chunks = INK_START.split(INK_NUM);
+	let from: number[] = [];
+	let to: number[] = [];
+	let progress = 0;
+
+	const apply = (p: number) => {
+		progress = p;
+		let d = '';
+		for (let i = 0; i < from.length; i++) d += chunks[i] + (from[i] + (to[i] - from[i]) * p);
+		shape.setAttribute('d', d + chunks[from.length]);
+	};
+
+	const buildFilter = () => {
+		filter.textContent = '';
+		const add = (tag: string, attrs: Record<string, string | number>, parent: Element = filter) => {
+			const n = document.createElementNS(SVGNS, tag);
+			for (const k in attrs) n.setAttribute(k, String(attrs[k]));
+			parent.appendChild(n);
+			return n;
+		};
+		add('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.045 0.055', numOctaves: 4, seed: 5, result: 'noise' });
+		add('feDisplacementMap', { in: 'SourceGraphic', in2: 'noise', scale: 100, xChannelSelector: 'R', yChannelSelector: 'G' });
+		add('feGaussianBlur', { stdDeviation: 1.8, result: 'blurred' });
+		const tr = add('feComponentTransfer', { in: 'blurred', result: 'contrast' });
+		add('feFuncA', { type: 'linear', slope: 2.2, intercept: -0.6 }, tr);
+	};
+
+	const layout = () => {
+		const w = node.offsetWidth;
+		const h = node.offsetHeight;
+		if (!w || !h) return;
+		const vbHeight = (h / w) * INK_VB;
+		const ratio = vbHeight / INK_VB;
+		svg.setAttribute('viewBox', `0 0 ${INK_VB} ${vbHeight}`);
+		buildFilter();
+		const scaleY = (d: string) => (d.match(INK_NUM) ?? []).map(Number).map((n, i) => (i % 2 ? n * ratio : n));
+		from = scaleY(INK_START);
+		to = scaleY(INK_FINAL);
+		apply(progress);
+	};
+
+	let observer: ResizeObserver | undefined;
+
+	// Reduced motion (or before GSAP is in): the painted room just stands there.
+	if (window.matchMedia(MOTION_OK).matches) {
+		image.setAttribute('mask', `url(#${mask.id})`);
+		layout();
+		observer = new ResizeObserver(layout);
+		observer.observe(node);
+	}
+
+	const gsapAction = withGsap(({ gsap, ScrollTrigger }) => {
 		const mm = gsap.matchMedia();
 		mm.add(MOTION_OK, () => {
-			const tl = gsap.timeline({
-				scrollTrigger: {
-					trigger: node,
-					start: 'top 85%',
-					end: 'bottom 80%',
-					scrub: 0.5
-				}
+			ScrollTrigger.create({
+				trigger: node,
+				start: 'top 40%',
+				end: 'bottom 55%',
+				onUpdate: (self) => apply(self.progress),
+				onRefresh: (self) => apply(self.progress)
 			});
-			// y: 0 clears the CSS start transform, otherwise GSAP stacks its percentage on top of it.
-			tl.fromTo(wipe, { y: 0, yPercent: -104 }, { y: 0, yPercent: 0, ease: 'none' }, 0);
-			tl.fromTo(paint, { y: 0, yPercent: 104 }, { y: 0, yPercent: 0, ease: 'none' }, 0);
 		});
 		return () => mm.revert();
 	});
+
+	return {
+		destroy() {
+			observer?.disconnect();
+			gsapAction.destroy();
+		}
+	};
 }

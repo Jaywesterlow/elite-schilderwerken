@@ -89,3 +89,14 @@ Deploy: Vercel-connector `deploy_to_vercel`, target production, zonder package-l
   De wipe zakt op scroll, de verflaag schuift precies tegengesteld mee, dus het huis staat stil en alleen de inktrand loopt.
   Gotcha: de CSS-startstand (`html.motion .wipe`) en GSAP's `yPercent` stapelen; daarom staat `y: 0` in de tween.
 - Repo: github.com/Jaywesterlow/elite-schilderwerken. Deploy vanuit `main`.
+
+## v8 interieur (2026-10-01)
+
+- Feiten: het huis is weg (Elite doet alleen nog binnenwerk). Ervoor in de plaats een lege kamer als lijntekening
+  (`static/kamer-lijn.webp`) en dezelfde kamer geverfd en ingericht (`static/kamer-verf.webp`), uit Nano Banana Pro.
+  Prompts en stappen in `docs/nanobanana-interieur-prompt.md`, 2K-originelen in `design/`.
+- `inkReveal` is nu de motor van bibliotheek 48a: de verflaag is een SVG-`<image>` met een maskerpad, en de rand
+  is een filterketen (ruis, blur, feFuncA) op dat pad. Daardoor verandert de rafelrand terwijl hij zakt.
+  Start als de plaat 40 % van het scherm bereikt, klaar als de onderkant 55 % passeert; het eindpad schiet voorbij
+  de plaat, dus hij eindigt altijd volledig geverfd. Safari en Firefox: zelfde beweging met een gladde rand.
+- Opgeruimd: huisbeelden, `inkrand.svg`, de blueprint-prompt, ongebruikte `parallax`, `drawOnScroll` en `favicon.svg`.
