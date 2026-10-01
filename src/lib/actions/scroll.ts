@@ -280,13 +280,15 @@ export function stackCards(list: HTMLElement) {
  * the ragged edge changes shape as it travels instead of sliding down as one stamp.
  *
  * Driven by ScrollTrigger (which Lenis already updates): starts when the plate's top passes
- * 40% of the viewport, done when its bottom passes 55%. The final path overshoots the plate,
- * so at the end the whole drawing is painted, never a ragged strip left at the bottom.
+ * 65% of the viewport, done when its bottom passes 85%, so the whole plate is in view and
+ * clear of the header when it finishes. The path reaches 120 units past the plate on the
+ * left, right and top (the noise displaces it by up to 50) and overshoots the bottom at the
+ * end, so the finished drawing is painted to every edge.
  * Safari and Firefox do not render the filter chain on a mask; there the edge stays smooth.
  */
 const INK_VB = 1000;
-const INK_START = 'M 0 1  Q 500 2 1000 1  L 1000 0  L 0 0  Z';
-const INK_FINAL = 'M 0 1150  Q 500 1400 1000 1150  L 1000 0  L 0 0  Z';
+const INK_START = 'M -120 1  Q 500 2 1120 1  L 1120 -120  L -120 -120  Z';
+const INK_FINAL = 'M -120 1150  Q 500 1400 1120 1150  L 1120 -120  L -120 -120  Z';
 const INK_NUM = /-?\d+\.?\d*/g;
 const SVGNS = 'http://www.w3.org/2000/svg';
 let inkCount = 0;
@@ -363,8 +365,8 @@ export function inkReveal(node: HTMLElement) {
 		mm.add(MOTION_OK, () => {
 			ScrollTrigger.create({
 				trigger: node,
-				start: 'top 40%',
-				end: 'bottom 55%',
+				start: 'top 65%',
+				end: 'bottom 85%',
 				onUpdate: (self) => apply(self.progress),
 				onRefresh: (self) => apply(self.progress)
 			});

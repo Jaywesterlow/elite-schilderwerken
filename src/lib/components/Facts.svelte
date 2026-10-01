@@ -56,7 +56,7 @@
 				/>
 				<svg class="ink-layer" viewBox="0 0 1000 1239" preserveAspectRatio="none" aria-hidden="true">
 					<defs>
-						<mask maskContentUnits="userSpaceOnUse"><path fill="white" d="M 0 1 Q 500 2 1000 1 L 1000 0 L 0 0 Z" /></mask>
+						<mask maskContentUnits="userSpaceOnUse"><path fill="white" d="M -120 1 Q 500 2 1120 1 L 1120 -120 L -120 -120 Z" /></mask>
 						<filter />
 					</defs>
 					<image href={plate.paint} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" />
